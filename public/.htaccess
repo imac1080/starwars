@@ -1,0 +1,34 @@
+
+<IfModule mod_setenvif.c>
+
+    SetEnvIf  Host     ".*"          CI_ENV=production
+    SetEnvIf  Host     "localhost"   CI_ENV=development
+    #SetEnvIf Host     ""            CI_ENV=testing
+
+
+</IfModule>
+
+<IfModule mod_rewrite.c>
+
+    RewriteEngine on
+    RewriteBase	    /
+
+
+    RewriteRule ^robots\.txt$ /robots_txt/index [R=301,L]
+
+    RewriteCond %{HTTP_HOST}	!localhost [NC]
+    RewriteCond %{REQUEST_FILENAME}	!-f
+    RewriteCond $1              !^(index\.php|robots\.txt)
+    RewriteRule ^(.*)$          index.php?/$1 [QSA,L]
+
+    RewriteCond %{HTTP_HOST}	=localhost [NC]
+    RewriteCond %{REQUEST_FILENAME}	!-f
+    RewriteCond $1              !^(index\.php|robots\.txt)
+    RewriteRule ^(.*)$          /symfony/index.php?/$1 [QSA,L]
+
+    RewriteCond %{THE_REQUEST}  ^.+$    [NC]
+    RewriteRule .*\.inc$	    -	    [F,L]
+
+    RewriteRule \.htaccess	    -	    [F,L]
+
+</IfModule>
